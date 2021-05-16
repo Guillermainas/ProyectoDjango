@@ -1,0 +1,71 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+
+
+{% if user.is_authenticated %}
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+
+<h3>Pregunta: {{ question.question_text }}</h3>
+{% if error_message %}<p><strong style="color:red;"><b>{{ error_message }}</b></strong></p>{% endif %}
+
+
+<table>
+    <tr>
+        <th>Choice text</th>
+        <th>Votes</th>
+        <th>Answer</th>
+    </tr>
+{% csrf_token %}
+{% for choice in question.choice_set.all %}
+    <tr>
+    <!--<td><input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" /></td>-->
+    <td style="width:200px"><label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br /></td>
+    <td style="width:200px"><label for="choice{{ forloop.counter }}">{{ choice.votes }}</label><br /></td>
+    
+    {% if choice.choice_correcta %}
+        
+    <td style="width:200px"><label style="color: forestgreen" for="choice{{ forloop.counter }}">Correct</label><br /></td>
+    
+    {% else %}
+
+    <td style="width:200px"><label style="color: red" for="choice{{ forloop.counter }}">Incorrect</label><br /></td>
+
+    {% endif %}
+    
+    </tr>
+{% endfor %}
+</table>
+
+{% if request.user.is_authenticated %}
+    <a href="{% url 'choice_add' question.id %}"><h3>Insertar Opciones</h3></a> 
+    <a href="{% url 'chart' question.id %}"> <h3>Ver resultado de la votacion</h3> </a><br />
+{% else %}
+   
+{% endif %}
+
+{% else %}
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+
+<h3>Pregunta: {{ question.question_text }}</h3>
+{% if error_message %}<p><strong style="color:red;"><b>{{ error_message }}</b></strong></p>{% endif %}
+<form action="{% url 'vote' question.id %}" method="post">
+{% csrf_token %}
+{% for choice in question.choice_set.all %}
+    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+{% endfor %}
+{% if request.user.is_authenticated %}
+    <a href="{% url 'choice_add' question.id %}"><h3>Insertar Opciones</h3></a> 
+    <a href="{% url 'chart' question.id %}"> <h3>Ver resultado de la votacion</h3> </a><br />
+{% else %}
+    <input type="submit" value="Vote" />
+{% endif %}
+
+</form>
+{% endif %}
+
+{% endblock %}

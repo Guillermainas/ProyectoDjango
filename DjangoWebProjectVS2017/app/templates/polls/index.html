@@ -1,0 +1,45 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+
+
+
+{% if latest_question_list %}
+ <form method="GET" action=".">
+    <select name="tema" id="tema">
+        <option selected="selected"> Elegir tema</option>
+        {% for question in latest_question_list %}
+
+            <option value = {{question.question_subject}} > {{question.question_subject}}</option>
+       
+        {% endfor %}
+    </select>
+     <button type="submit">Save</button>
+</form>
+{% endif%}
+
+
+{% if queryset %}
+    <ul>
+    {% for question in queryset %}
+        <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+    {% endfor %}
+    </ul>
+
+{% elif latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+        <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+    {% endfor %}
+    </ul>
+  
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+{% if request.user.is_authenticated %}
+<a href="{% url 'add' %}"><h2>Insertar pregunta</h2></a> 
+{% endif %}
+
+{% endblock %}

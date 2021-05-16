@@ -1,0 +1,12 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+
+<div class="alert alert-danger">Has llegado al limite maximo de respuestas, ya no se pueden insertar mas</div>
+
+
+<a href="{% url 'index' %}">Ver preguntas</a> 
+
+{% endblock %}
